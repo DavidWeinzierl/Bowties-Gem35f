@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import ical from "node-ical";
 
-export const dynamic = "force-dynamic";
+export const dynamic = "force-static";
+
 
 // Helper to determine if an event is public
 function isPublicEvent(summary: string = "", description: string = ""): boolean {

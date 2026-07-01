@@ -68,22 +68,33 @@ export function FooterContact() {
     setIsSubmitting(true);
     setSubmitError(null);
     try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+      const emailTo = "booking@thebowties.at";
+      const subject = `Booking Inquiry: ${data.eventType} on ${data.eventDate} by ${data.name}`;
+      const body = `You have received a new booking inquiry from the website contact form.
 
-      const resData = await response.json();
+Name: ${data.name}
+Email: ${data.email}
+Event Date: ${data.eventDate}
+Event Type: ${data.eventType}
 
-      if (!response.ok) {
-        throw new Error(resData.error || "Something went wrong. Please try again.");
-      }
+Message:
+${data.message}
+`;
+
+      const mailtoUrl = `mailto:${emailTo}?subject=${encodeURIComponent(
+        subject
+      )}&body=${encodeURIComponent(body)}`;
+
+      // Open the user's default mail client
+      window.location.href = mailtoUrl;
+
+      // Provide a brief loading state before showing success screen
+      await new Promise((resolve) => setTimeout(resolve, 800));
 
       setSubmitSuccess(true);
       reset();
     } catch (err: any) {
-      setSubmitError(err.message || "Failed to submit booking inquiry.");
+      setSubmitError(err.message || "Failed to launch mail client.");
     } finally {
       setIsSubmitting(false);
     }
