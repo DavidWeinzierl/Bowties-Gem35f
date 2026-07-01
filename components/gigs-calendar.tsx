@@ -15,29 +15,54 @@ interface Gig {
   description?: string;
 }
 
+// Helper to generate dynamic future dates for mock gigs
+const getFutureDate = (daysAhead: number, hours: number) => {
+  const date = new Date();
+  date.setDate(date.getDate() + daysAhead);
+  date.setHours(hours, 0, 0, 0);
+  return date.toISOString();
+};
+
+const MOCK_GIGS: Gig[] = [
+  {
+    id: "mock-1",
+    title: "Town Festival Open Air",
+    location: "Rathausplatz, Vienna",
+    start: getFutureDate(12, 19),
+    end: getFutureDate(12, 23),
+    description: "Public open-air concert at the Vienna town festival. Free entry!",
+  },
+  {
+    id: "mock-2",
+    title: "Club Showcase Night",
+    location: "U4 Club, Vienna",
+    start: getFutureDate(26, 21),
+    end: getFutureDate(27, 2),
+    description: "Rocking the legendary U4 club stage. Come dance with us!",
+  },
+  {
+    id: "mock-3",
+    title: "Old Town Summer Session",
+    location: "Residenzplatz, Salzburg",
+    start: getFutureDate(45, 18),
+    end: getFutureDate(45, 22),
+    description: "Live open air session by the river. Great food and drinks available.",
+  },
+];
+
 export function GigsCalendar() {
   const [gigs, setGigs] = React.useState<Gig[]>([]);
   const [loading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState<string | null>(null);
+  const [error] = React.useState<string | null>(null);
 
   React.useEffect(() => {
-    async function fetchGigs() {
-      try {
-        const response = await fetch("/api/calendar");
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
-        setGigs(data.events || []);
-      } catch (err) {
-        console.error("Error fetching gigs:", err);
-        setError("Failed to sync live calendar events.");
-      } finally {
-        setLoading(false);
-      }
-    }
+    // Brief loading state for premium look & feel transition
+    const timer = setTimeout(() => {
+      setGigs(MOCK_GIGS);
+      setLoading(false);
+    }, 450);
 
-    fetchGigs();
+    return () => clearTimeout(timer);
   }, []);
 
   const handleBookNow = () => {

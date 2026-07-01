@@ -13,7 +13,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  serverExternalPackages: ["node-ical", "nodemailer"],
 };
 
 export default nextConfig;
